@@ -8,12 +8,13 @@ public class CircleObject : MonoBehaviour
     public bool isUsed;      //사용 완료 체크
     Rigidbody2D rigidbody2D;
 
+    public int index;        //과일 번호 설정
 
     // Update is called once per frame
-    void Start()
+    void Awake()
     {
+        rigidbody2D = GetComponent<Rigidbody2D>();   //오브젝트의 강체에 접근
         isUsed = false;             //시작할때 사용이 안되었다고 입력
-        rigidbody2D = GetComponent<Rigidbody2D>();     //오브젝트의 강체에 접근
         rigidbody2D.simulated = false;                 //물리 행동이 처음에는 동작하지 않게 설정
     }
 
@@ -55,11 +56,49 @@ public class CircleObject : MonoBehaviour
         rigidbody2D.simulated = true;             //물리 시뮬레이션을 사용함 (true)
 
         GameObject temp = GameObject.FindWithTag("GameManager");           //Scene에서 GameManager Tag 가지고 있는 오브젝트를 가져온다.
-        if(temp != null)                                                   //해당 오브젝트가 있을 경우
+        if (temp != null)                                                   //해당 오브젝트가 있을 경우
         {
             temp.gameObject.GetComponent<GameManager>().GenObject();        //GameManager 의 GenObject 함수를 호출
         }
     }
 
+    public void Used()
+    {
+        isDrag = false;
+        isUsed = true;
+        rigidbody2D.simulated = true;
+    }
+
+
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (index >= 7)
+            return;
+    }
+
+
+    public void OnCollisionEnter2D(Collision collision)
+    {
+        if (collision.gameObject.tag == "Fruit")
+        {
+            CircleObject temp = collision.gameObject.GetComponent<CircleObject>();
+
+            if (temp.index == index)
+            {
+
+                if (gameObject.GetInstanceID() > collision.gameObject.GetInstanceID())
+                {
+                    //GameManager에서 합친 오브젝트를 생성
+                    GameObject tempGameManager = GameObject.FindWithTag("GameMabager");
+                    if (tempGameManager !=null)
+                    {
+                        tempGameManager.gameObject.GetComponent<GameManager>().MergeObject(index, gameObject.transform.position);
+                    }
+                }
+                Destroy(temp.gameObject);
+                Destroy(gameObject);
+            }
+        }
+    }
 
 }

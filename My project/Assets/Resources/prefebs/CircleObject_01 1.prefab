@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 2003367665032378093}
   - component: {fileID: 5570029156362803759}
   m_Layer: 0
-  m_Name: Apple
-  m_TagString: Untagged
+  m_Name: CircleObject_01 1
+  m_TagString: Fruit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 7ccc026100c840748b37839fb0723c20, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 243b786f56d83144685b26b61b90a604, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -163,3 +163,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isDrag: 0
   isUsed: 0
+  index: 0
