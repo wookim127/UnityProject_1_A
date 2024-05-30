@@ -8,14 +8,26 @@ public class CircleObject : MonoBehaviour
     public bool isUsed;      //사용 완료 체크
     Rigidbody2D rigidbody2D;
 
-    public int index;        //과일 번호 설정
+    public int index;  //과일 번호 설정
 
+    public float EndTime = 0.0f;
+    public SpriteRenderer spriteRenderer;
+
+    public GameManager gameManager;
     // Update is called once per frame
     void Awake()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();   //오브젝트의 강체에 접근
         isUsed = false;             //시작할때 사용이 안되었다고 입력
-        rigidbody2D.simulated = false;                 //물리 행동이 처음에는 동작하지 않게 설정
+        rigidbody2D.simulated = false;
+
+        spriteRenderer = GetComponent<SpriteRenderer>(); //물리 행동이 처음에는 동작하지 않게 설정
+    }
+
+    void Start()
+    {
+        gameManager = GameObject.FindWithTag("GameManager").GetComponent<GameManager>();
+        
     }
 
     void Update()
@@ -53,13 +65,11 @@ public class CircleObject : MonoBehaviour
     {
         isDrag = false;                           //드래그 중이다. (false)
         isUsed = true;                            //사용 완료 되었다.(true)
-        rigidbody2D.simulated = true;             //물리 시뮬레이션을 사용함 (true)
+        rigidbody2D.simulated = true;
 
-        GameObject temp = GameObject.FindWithTag("GameManager");           //Scene에서 GameManager Tag 가지고 있는 오브젝트를 가져온다.
-        if (temp != null)                                                   //해당 오브젝트가 있을 경우
-        {
-            temp.gameObject.GetComponent<GameManager>().GenObject();        //GameManager 의 GenObject 함수를 호출
-        }
+        gameManager.GenObject();//물리 시뮬레이션을 사용함 (true)
+
+         
     }
 
     public void Used()
@@ -67,6 +77,36 @@ public class CircleObject : MonoBehaviour
         isDrag = false;
         isUsed = true;
         rigidbody2D.simulated = true;
+    }
+
+    public void OnTriggerStay2D(Collider2D collision)
+    {
+        if(collision.tag == "EndLine")
+        {
+            EndTime += Time.deltaTime;
+
+            if (EndTime > 1)
+            {
+                spriteRenderer.color = new Color(0.9f, 0.2f, 0.2f);
+
+            }
+            if(EndTime > 3)
+            {
+                //Debug.Log("게임 종료");
+                gameManager.EndGame();
+
+            }
+        }
+        
+    }
+
+    public void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == "EndLine")
+        {
+            EndTime = 0.0f;
+            spriteRenderer.color = Color.white;
+        }
     }
 
 
